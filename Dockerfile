@@ -20,6 +20,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy the entire project to the container
 COPY . /app
 
+RUN prisma generate --schema=/app/src/prisma/schema.prisma
+
 # Set PYTHONPATH dynamically
 ENV PYTHONPATH=/app/src
 
