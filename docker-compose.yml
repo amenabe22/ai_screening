@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app  # Bind mount the local app directory to the container
+      - ./app:/app  # Mount the local app directory to the container
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/postgres
     depends_on:
@@ -25,10 +25,7 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - postgres_config:/etc/postgresql
 
 volumes:
   postgres_data:
-    driver: local
-  postgres_config:
     driver: local
