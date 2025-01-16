@@ -37,7 +37,7 @@ openai-whisper @ git+https://github.com/openai/whisper.git@517a43ecd132a2089d85f
 pillow==10.4.0
 prisma==0.15.0
 proglog==0.1.10
-psycopg2==2.9.10
+psycopg2-binary
 pycparser==2.22
 pydantic==2.10.5
 pydantic-settings==2.7.1
