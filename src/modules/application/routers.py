@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.post("/", response_model=Application)
 async def create_application_api(application: CreateApplicationDto):
-    new_application = await create_application(new_application)
+    new_application = await create_application(application)
     return new_application
 
 

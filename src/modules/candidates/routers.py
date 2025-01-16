@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter
 from .models import CandidateOut, CreateCandidateDto
-from .api import create_candidate, get_all_candidates
+from .api import create_candidate, get_all_candidates, get_single_candidate
 
 router = APIRouter()
 
@@ -14,3 +14,8 @@ async def create_candidate_api(create_candidate_dto: CreateCandidateDto):
 @router.get("/", response_model=List[CandidateOut])
 async def get_all_candidates_api():
     return await get_all_candidates()
+
+
+@router.patch("/", response_model=List[CandidateOut])
+async def get_single_candidate_api(data):
+    return await get_single_candidate(data)

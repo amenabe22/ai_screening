@@ -1,21 +1,100 @@
+import os
+import whisper
+import tempfile
+import requests
+from openai import OpenAI
+from core.database import db
 from fastapi import HTTPException
-from .models import CreateVideoResponseDto, VideoResponse
-from ...core.database import db
+from core.config import OPENAI_API_KEY
+from .models import CreateVideoResponseDto
+from moviepy.video.io.VideoFileClip import VideoFileClip
+
+# Initialize the Whisper model
+# Choose model size based on your resource constraints
+whisper_model = whisper.load_model("base")
+
+client = OpenAI(
+    # defaults to os.environ.get("OPENAI_API_KEY")
+    api_key=OPENAI_API_KEY,
+)
 
 
-# Helper functions to handle transcription and feedback generation
+async def download_video(video_url: str, output_path: str) -> str:
+    """Download video from URL and save it locally."""
+    response = requests.get(video_url, stream=True)
+    if response.status_code == 200:
+        with open(output_path, "wb") as file:
+            for chunk in response.iter_content(chunk_size=1024):
+                file.write(chunk)
+        return output_path
+    else:
+        raise ValueError(
+            f"Failed to download video. Status code: {response.status_code}")
+
+
+async def extract_audio_from_video(video_path: str) -> str:
+    """Extract audio from a video file using MoviePy."""
+    video = VideoFileClip(video_path)
+    audio_path = video_path.replace(".mp4", ".mp3")
+    video.audio.write_audiofile(audio_path)
+    video.close()
+    return audio_path
+
+
 async def transcribe_and_summarize_video(video_url: str):
-    # Here, you would use your service (AssemblyAI/OpenAI) to transcribe the video and generate a summary
-    # Placeholder for transcription logic
-    return {"conversation": "Transcribed text", "summary": "Summary of the video"}
+    # Step 1: Download video
+    with tempfile.TemporaryDirectory() as temp_dir:
+        video_path = os.path.join(temp_dir, "video.mp4")
+        await download_video(video_url, video_path)
+
+        # Step 2: Extract audio
+        audio_path = await extract_audio_from_video(video_path)
+
+        # Step 3: Transcribe audio using Whisper
+        transcription_result = whisper_model.transcribe(audio_path)
+        transcript = transcription_result["text"]
+
+        # Step 4: Generate summary using OpenAI
+        # openai.api_key = "your-openai-api-key"
+        summary_prompt = (
+            f"Summarize the following conversation concisely:\n\n{transcript}"
+        )
+        summary_response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": summary_prompt}]
+        )
+
+        summary = summary_response.choices[0].message.content.strip()
+        # summary_response = openai.ChatCompletion.create(
+        #     model="gpt-4",
+        #     messages=[
+        #         {"role": "system", "content": "You are a helpful summarization assistant."},
+        #         {"role": "user", "content": summary_prompt}
+        #     ]
+        # )
+        # summary = summary_response["choices"][0]["message"]["content"].strip()
+
+        return {"conversation": transcript, "summary": summary}
 
 
 async def generate_feedback(question: str, transcript: str):
-    # Placeholder for feedback generation logic using OpenAI
-    return "Generated feedback based on transcript"
+    # Use OpenAI to generate feedback
+    feedback_prompt = (
+        f"Analyze the following transcript of a response to the question: '{question}'. "
+        f"Provide constructive feedback on the content, clarity, and overall quality:\n\n{transcript}"
+    )
+    summary_response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": feedback_prompt}]
+    )
 
+    feedback = summary_response.choices[0].message.content.strip()
+
+    return feedback
 
 # @app.post("/video-responses")
+
+
 async def create_video_response(create_video_response_dto: CreateVideoResponseDto):
     application = await db.application.find_unique(
         where={"id": create_video_response_dto.application_id}

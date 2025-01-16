@@ -1,5 +1,5 @@
 from typing import List
-from ...core.database import db
+from core.database import db
 from fastapi import HTTPException
 from .models import QuestionCreate, QuestionUpdate
 

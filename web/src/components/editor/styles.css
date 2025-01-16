@@ -1,0 +1,24 @@
+a {
+  color: #5454ff;
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 2rem !important;
+}
+
+h2 {
+  font-size: 1.5rem !important;
+  /* padding-left: 20px; */
+}
+
+h3 {
+  font-size: 1.2rem !important;
+  /* padding-left: 40px; */
+}
+
+h4 {
+  font-size: 1rem !important;
+  font-style: italic;
+  /* padding-left: 60px; */
+}

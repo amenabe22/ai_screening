@@ -1,5 +1,5 @@
 
-from ...core.database import db
+from core.database import db
 from .models import CreateCandidateDto
 
 
@@ -16,3 +16,10 @@ async def create_candidate(create_candidate_dto: CreateCandidateDto):
 
 async def get_all_candidates():
     return await db.candidate.find_many()
+
+
+async def get_single_candidate(data):
+    print("DATA: ", data)
+    return await db.candidate.find_first(where={
+        "id": data.id
+    })

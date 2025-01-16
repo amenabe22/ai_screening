@@ -1,4 +1,4 @@
-from ...core.database import db
+from core.database import db
 from fastapi import HTTPException
 from prisma.models import Application
 from prisma.enums import ApplicationStatus
@@ -35,7 +35,7 @@ async def create_application(application: CreateApplicationDto):
 
 # @app.get("/applications", response_model=List[Application])
 async def get_all_applications():
-    applications = await db.application.find_many(include={"candidate": True, "job": True})
+    applications = await db.application.find_many(include={"candidate": True, "job": True, "videoResponses": True})
     return applications
 
 # Get a single application

@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Poppins';
+    src: url("./assets/fonts/Raleway-VariableFont_wght.ttf");
+}
+
+h1, h2, h3, h4, h5, h6, div, p, span, a, input, label, button, li, table, title {
+    font-family: 'Poppins' !important;
+}
+
+input, .ant-select, button{
+    min-height: 2.8rem !important;
+}
+
+input, button, .ant-input-affix-wrapper {
+    border-radius: 0 !important;
+}
+
+.ant-input-affix-wrapper{
+    max-height: 3.2rem;
+    padding: 2px 10px !important;
+}
+
+.carousel-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.ant-menu-item-selected{
+    background-color: #0047AA !important;
+}
+
+.ant-menu-item {
+    border-radius: 0px !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+    width: 90% !important;
+}
+
+line{
+    stroke: #ffffff !important;
+}
+
+.ant-picker {
+    border-radius: 0px !important;
+}
