@@ -4,6 +4,11 @@ FROM python:3.10-slim
 # Set the working directory in the container
 WORKDIR /app
 
+# Install system dependencies required for the app, including git
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  git \
+  && rm -rf /var/lib/apt/lists/*
+
 # Copy the requirements file to the container
 COPY requirements.txt .
 
