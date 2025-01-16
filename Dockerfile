@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY . /app
 
 # Set PYTHONPATH dynamically
-ENV PYTHONPATH=$PWD
+ENV PYTHONPATH=/app/src
 
 # Expose the port FastAPI runs on
 EXPOSE 8000
