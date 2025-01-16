@@ -88,7 +88,7 @@ function JobList() {
             icon={<Eye className="w-6 h-6 cursor-pointer" />}
             onClick={() => navigate(`/jobs/${record.id}`)}
           />
-          <CopyIcon className="w-5 h-5 cursor-pointer" onClick={() => copyJobLink(import.meta.env.VITE_BASE_URI + "/job-public/" + record?.id)} />
+          <CopyIcon className="w-5 h-5 cursor-pointer" onClick={() => copyJobLink(import.meta.env.VITE_BASE_URI + "/candidate/jobs/" + record?.id)} />
           {/* <Button
             type="text"
             icon={<Edit className="w-4 h-4" />}

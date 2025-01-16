@@ -25,13 +25,14 @@ function QuestionList({ form }: { form: any }) {
     // const queryClient = useQueryClient();
     const [questions, setQuestions] = useState([]);
     // const [error, setError] = useState(null);
-
+    const jobTitle = form.getFieldValue('title')
+    const jobDesc = form.getFieldValue('description')
     const questionQuestions = useMutation({
         mutationFn: async () => {
             return await api.post('/jobs/gen-q/', {
-                "title": "Senior software developer",
+                "title": jobTitle,
                 "id": 4,
-                "description": "We are seeking a highly skilled and motivated Senior Software Developer to join our dynamic team. In this role, you will play a critical part in designing, developing, and maintaining scalable software solutions that meet the needs of our growing business. If you have a passion for coding, problem-solving, and innovation, this is the perfect opportunity for you!\nKey Responsibilities:"
+                "description": jobDesc
             });
         },
         onSuccess: ({ data: { questions } }) => {

@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y ffmpeg
+
 # Copy the requirements file to the container
 COPY requirements.txt /app/requirements.txt
 
@@ -21,6 +23,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY . /app
 
 RUN prisma generate --schema=/app/src/schema.prisma
+RUN prisma migrate dev --name init
 
 # Set PYTHONPATH dynamically
 ENV PYTHONPATH=/app/src
