@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app  # Mount the local app directory to the container
+      - .:/app  # Mount the root project directory to /app inside the container
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/postgres
     depends_on:
