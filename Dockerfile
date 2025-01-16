@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY . /app
 
 RUN prisma generate --schema=/app/src/schema.prisma
-RUN prisma migrate dev --name init
+# RUN prisma migrate dev --name init
 
 # Set PYTHONPATH dynamically
 ENV PYTHONPATH=/app/src
