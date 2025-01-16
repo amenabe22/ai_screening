@@ -6,10 +6,10 @@ WORKDIR /app
 
 # Install system dependencies required for the app, including PostgreSQL libraries and git
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  git \
-  libpq-dev \
-  gcc \
-  && rm -rf /var/lib/apt/lists/*
+    git \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file to the container
 COPY requirements.txt /app/requirements.txt
@@ -17,8 +17,8 @@ COPY requirements.txt /app/requirements.txt
 # Install Python dependencies
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Copy the `src` folder containing your application to the container
-COPY src /app/src
+# Copy the entire project to the container
+COPY . /app
 
 # Expose the port FastAPI runs on
 EXPOSE 8000
