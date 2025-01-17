@@ -25,6 +25,20 @@ function Application() {
     }
   });
 
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        alert("You switched away from the browser. Please stay focused!");
+      }
+    };
+
+    window.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
   const uploadFile = async (options: any) => {
     setIsLoading(true);
 

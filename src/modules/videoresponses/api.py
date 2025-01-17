@@ -77,6 +77,22 @@ async def transcribe_and_summarize_video(video_url: str):
         return {"conversation": transcript, "summary": summary}
 
 
+async def generate_rating(question: str, transcript: str):
+    # Use OpenAI to generate rating
+    raitng_prompt = (
+        f"Rate the following transcript of a response to the question: '{question}'. "
+        f"Provide an honest reasonable rate out of 10 just return the rating value number:\n\n{transcript}"
+    )
+    summary_response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": raitng_prompt}]
+    )
+
+    rating = summary_response.choices[0].message.content.strip()
+
+    return rating
+
+
 async def generate_feedback(question: str, transcript: str):
     # Use OpenAI to generate feedback
     feedback_prompt = (
@@ -132,9 +148,10 @@ async def create_video_response(create_video_response_dto: CreateVideoResponseDt
 
     # Generate feedback based on transcription
     feedback = await generate_feedback(question.text, video_response.transcript)
+    rating = await generate_rating(question.text, video_response.transcript)
     video_response = await db.videoresponse.update(
         where={"id": video_response.id},
-        data={"feedback": feedback}
+        data={"feedback": feedback, "rating": rating}
     )
 
     return video_response

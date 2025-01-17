@@ -1,4 +1,4 @@
-import {Button, Layout, Menu, Modal} from 'antd';
+import { Button, Layout, Menu, Modal } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Building2, BriefcaseIcon, Users, Globe, PlusIcon } from 'lucide-react';
 import { MdOutlineAnalytics } from 'react-icons/md';
@@ -6,8 +6,8 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { BiSupport } from "react-icons/bi";
 import { IoExitOutline } from "react-icons/io5";
-import {useUser} from "../store/authStore.ts";
-import {useState} from "react";
+import { useUser } from "../store/authStore.ts";
+import { useState } from "react";
 
 const { Header, Sider, Content } = Layout;
 
@@ -81,7 +81,7 @@ function RecruiterLayout() {
             </Modal>
 
             <Layout>
-                <Sider width={250} className="bg-[#006BFF]  text-white pt-4 space-x-3 flex flex-col justify-between h-[100vh]">
+                <Sider width={250} className="bg-[#006BFF] hidden text-white pt-4 space-x-3 flex flex-col justify-between h-[100vh]">
                     <div>
                         <div className="text-3xl font-bold p-4 rounded-full text-center">AI Screening</div>
                         <div className={'p-3'}>
@@ -125,7 +125,7 @@ function RecruiterLayout() {
                     </div> */}
                 </Sider>
 
-                <Content className="h-screen overflow-auto bg-white">
+                <Content className="h-screen overflow-auto bg-white flex justify-center">
                     {/*<Header className="bg-white p-6 h-20 flex items-center justify-between">*/}
                     {/*    <div className="text-xl font-bold py-3 border-b">Jobs</div>*/}
                     {/*    <div></div>*/}
@@ -138,7 +138,7 @@ function RecruiterLayout() {
                     {/*        </SignedIn>*/}
                     {/*    </div>*/}
                     {/*</Header>*/}
-                    <div className={'p-6'}>
+                    <div className={'p-6  max-w-7xl w-full'}>
                         <Outlet />
                     </div>
                 </Content>

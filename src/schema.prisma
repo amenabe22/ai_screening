@@ -57,6 +57,7 @@ model VideoResponse {
   transcript    String? // AI-generated transcript
   summary       String? // AI-generated summary
   feedback      String? // AI-generated feedback
+  rating        String? // AI-generated rating
   recruiterId    Int?
   application   Application @relation(fields: [applicationId], references: [id])
   applicationId Int

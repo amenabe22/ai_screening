@@ -95,7 +95,7 @@ function JobDetail() {
                         const selectedJob = jobApplications?.find(
                             (application) => application.candidate.id === record.id
                         )
-
+                        console.log("selectedJob> ", selectedJob)
                         // const selectedVidResponse = videoResponseData?.filter((item) => item?.application?.id === selectedJob?.id);
 
                         // console.log("VID: ", selectedVidResponse);
@@ -110,7 +110,7 @@ function JobDetail() {
                         //   setOpen(true);
                         // }
 
-                        navigate(`/applications/${selectedJob?.id}`);
+                        navigate(`/applications/${record?.appId}`);
                     }}
                 >
                     Review
@@ -126,8 +126,14 @@ function JobDetail() {
                 (item) => item.job?.id === Number(id)
             );
 
+            console.log("LOG: filteredApplications", filteredApplications)
             const candidates = filteredApplications.map(
-                (application) => application.candidate
+                (application) => {
+                    return {
+                        ...application.candidate,
+                        appId: application.id
+                    }
+                }
             );
 
             setJobData(candidates);

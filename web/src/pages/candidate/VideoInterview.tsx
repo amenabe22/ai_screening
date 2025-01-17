@@ -38,6 +38,21 @@ function VideoInterview() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
 
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        alert("You switched away from the browser. That's not allowed!");
+        // TODO: implement restricted action
+      }
+    };
+
+    window.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
   const { data: job } = useQuery({
     queryKey: ['job', id],
     queryFn: async () => {
