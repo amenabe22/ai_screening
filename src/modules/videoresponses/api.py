@@ -79,13 +79,27 @@ async def transcribe_and_summarize_video(video_url: str):
 
 async def generate_rating(question: str, transcript: str):
     # Use OpenAI to generate rating
-    raitng_prompt = (
-        f"Rate the following transcript of a response to the question: '{question}'. "
-        f"Provide an honest reasonable rate out of 10 just return the rating value number:\n\n{transcript}"
+    # raitng_prompt = (
+    #     f"Rate the following transcript of a response to the question: '{question}'. "
+    #     f"Provide an honest reasonable rate out of 10 just return the rating value number:\n\n{transcript}"
+    # )
+    rating_prompt = (
+        f"Analyze the following transcript of a response to the question: '{question}'.\n\n"
+        f"Evaluate the response based on the following factors:\n"
+        f"- Relevance to the question\n"
+        f"- Clarity and coherence\n"
+        f"- Depth of insight, detail, and completeness\n"
+        f"- Grammar, articulation, and structure\n\n"
+        f"Provide an honest, reasonable rating out of 10 that reflects the quality of the response.\n"
+        f"Consider how well the response addresses the question, the clarity of the explanation, "
+        f"and the overall usefulness of the answer in a real-world context. The rating should "
+        f"reflect both the strengths and weaknesses of the response.\n\n"
+        f"Transcript:\n{transcript}"
     )
+
     summary_response = client.chat.completions.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": raitng_prompt}]
+        messages=[{"role": "user", "content": rating_prompt}]
     )
 
     rating = summary_response.choices[0].message.content.strip()
@@ -132,27 +146,27 @@ async def create_video_response(create_video_response_dto: CreateVideoResponseDt
             "videoUrl": create_video_response_dto.video_url
         }
     )
+    if not question.isIdQuestion:
+        # Start transcription as a background task
+        # Here, you can use a background task handler, or just await the transcription logic
+        transcription_data = await transcribe_and_summarize_video(video_response.videoUrl)
 
-    # Start transcription as a background task
-    # Here, you can use a background task handler, or just await the transcription logic
-    transcription_data = await transcribe_and_summarize_video(video_response.videoUrl)
+        # Update the video response with transcription and summary
+        video_response = await db.videoresponse.update(
+            where={"id": video_response.id},
+            data={
+                "transcript": transcription_data["conversation"],
+                "summary": transcription_data["summary"]
+            }
+        )
 
-    # Update the video response with transcription and summary
-    video_response = await db.videoresponse.update(
-        where={"id": video_response.id},
-        data={
-            "transcript": transcription_data["conversation"],
-            "summary": transcription_data["summary"]
-        }
-    )
-
-    # Generate feedback based on transcription
-    feedback = await generate_feedback(question.text, video_response.transcript)
-    rating = await generate_rating(question.text, video_response.transcript)
-    video_response = await db.videoresponse.update(
-        where={"id": video_response.id},
-        data={"feedback": feedback, "rating": rating}
-    )
+        # Generate feedback based on transcription
+        feedback = await generate_feedback(question.text, video_response.transcript)
+        rating = await generate_rating(question.text, video_response.transcript)
+        video_response = await db.videoresponse.update(
+            where={"id": video_response.id},
+            data={"feedback": feedback, "rating": rating},
+        )
 
     return video_response
 
@@ -160,7 +174,12 @@ async def create_video_response(create_video_response_dto: CreateVideoResponseDt
 # @app.get("/video-responses")
 async def get_video_responses():
     video_responses = await db.videoresponse.find_many(
-        include={"application": True, "question": True}
+        include={"application": True, "question": True},
+        order={
+            "question": {
+                "isIdQuestion": 'desc'
+            }
+        }
     )
     return video_responses
 

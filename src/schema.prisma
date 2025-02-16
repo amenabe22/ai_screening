@@ -13,7 +13,7 @@ model Job {
   description  String?
   questions    Question[] // One-to-many relation with Question
   applications Application[] // One-to-many relation with Application
-  recruiterId    Int?
+  recruiterId  Int?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -23,6 +23,8 @@ model Question {
   text           String
   job            Job             @relation(fields: [jobId], references: [id])
   jobId          Int
+  isIdQuestion   Boolean?        @default(false)
+  candidateId    Int? // Relationship with candidate since each question is unique for every candidate
   videoResponses VideoResponse[] // One-to-many relation with VideoResponse
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -45,7 +47,7 @@ model Candidate {
   name         String
   email        String        @unique
   resume       String? // URL or file path
-  recruiterId    Int?
+  recruiterId  Int?
   applications Application[] // One-to-many relation with Application
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -58,7 +60,7 @@ model VideoResponse {
   summary       String? // AI-generated summary
   feedback      String? // AI-generated feedback
   rating        String? // AI-generated rating
-  recruiterId    Int?
+  recruiterId   Int?
   application   Application @relation(fields: [applicationId], references: [id])
   applicationId Int
   question      Question    @relation(fields: [questionId], references: [id])

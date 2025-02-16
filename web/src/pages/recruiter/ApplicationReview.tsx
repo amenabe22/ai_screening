@@ -70,6 +70,8 @@ function ApplicationReview() {
                 return match;
             });
 
+            console.clear()
+            console.log(selectedVidResponse, "DselectedVidResponse")
             if (selectedVidResponse.length > 0 && selectedVidResponse !== selectedResponse) {
                 setSelectedResponse(selectedVidResponse);
             } else {
@@ -217,26 +219,26 @@ function ApplicationReview() {
                     <h1 className={'text-lg font-bold'}>Candidate Response</h1>
                     <p className={'border-b pb-3'}><strong>Question: </strong> {selectedVideo?.question?.text} </p>
                     <ReactPlayer height={500} controls={true} url={selectedVideo?.videoUrl} />
+                    {!selectedVideo?.question.isIdQuestion &&
+                        <div className={'response-review-container space-y-3 mt-3'}>
+                            <p className={''}>
+                                <strong
+                                    className={'font-bold'}>Transcript</strong>: {selectedVideo?.transcript === "" ? "No transcript available" : selectedVideo?.transcript}
+                            </p>
+                            <p className={'p-4 bg-slate-100 border-slate-300 border'}><strong>Summary</strong>: {selectedVideo?.summary}</p>
 
-                    <div className={'response-review-container space-y-3 mt-3'}>
-                        <p className={''}>
-                            <strong
-                                className={'font-bold'}>Transcript</strong>: {selectedVideo?.transcript === "" ? "No transcript available" : selectedVideo?.transcript}
-                        </p>
-                        <p className={'p-4 bg-slate-100 border-slate-300 border'}><strong>Summary</strong>: {selectedVideo?.summary}</p>
-
-                        <div className={'p-4 bg-[#E6F4FF] border-blue-300 border'}>
-                            <div>
-                                <strong className={'font-bold text-[#006BFF] text-xl'}>⭐️ RATING: <span
-                                    style={{ fontSize: 32 }}>{selectedVideo?.rating ? selectedVideo?.rating : '-'}/10</span></strong>
+                            <div className={'p-4 bg-[#E6F4FF] border-blue-300 border'}>
+                                <div>
+                                    <strong className={'font-bold text-[#006BFF] text-xl'}>⭐️ RATING: <span
+                                        style={{ fontSize: 32 }}>{selectedVideo?.rating ? selectedVideo?.rating : '-'}/10</span></strong>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className={'p-4 bg-[#E6F4FF] border-blue-300 border'}>
-                            <div><strong className={'font-bold text-[#006BFF]'}>AI Feedback: </strong> {selectedVideo?.feedback?.split("\n").map((item) =>
-                                <p>{item?.replace("**", "").replace("Feedback: ", "")}</p>)}</div>
-                        </div>
-                    </div>
+                            <div className={'p-4 bg-[#E6F4FF] border-blue-300 border'}>
+                                <div><strong className={'font-bold text-[#006BFF]'}>AI Feedback: </strong> {selectedVideo?.feedback?.split("\n").map((item) =>
+                                    <p>{item?.replace("**", "").replace("Feedback: ", "")}</p>)}</div>
+                            </div>
+                        </div>}
                 </div>
             </Modal>
             <div className="space-y-3">

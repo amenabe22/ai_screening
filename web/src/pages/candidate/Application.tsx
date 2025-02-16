@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Card, Upload, message } from 'antd';
 import { Typography } from 'antd';
@@ -17,6 +17,8 @@ function Application() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [candidateId, setCandidateId] = useState(null)
+  const [applicationId, setApplicationId] = useState(null)
 
   const { data: candidateList } = useQuery<Candidate[], any>({
     queryKey: ['candidates'],
@@ -28,6 +30,7 @@ function Application() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
+        alert("You switched away from the browser. Please stay focused!");
         alert("You switched away from the browser. Please stay focused!");
       }
     };
@@ -112,6 +115,48 @@ function Application() {
     },
   });
 
+  // create AI questions mutation
+  const questionQuestions = useMutation({
+    mutationFn: async (values) => {
+      setCandidateId(values?.candidateId)
+      setApplicationId(values?.applicationId)
+
+      return await api.post('/jobs/gen-q-new/', {
+        "id": id,
+        "candidate_id": values?.candidateId
+      });
+    },
+    onSuccess: ({ data }) => {
+      console.log("Generated Questions: ", data)
+      message.success('Application submitted successfully');
+      // on success create questions 
+      navigate(`/candidate/jobs/${id}/instruction?candidateId=${candidateId}&applicationId=${applicationId}`);
+
+      // const data_keys = Object.keys(data)
+      // const questions = data[data_keys[0]]
+      // console.log("DATA: ", questions);
+      // message.success('Questions created successfully');
+      // // form.resetFields();
+      // // queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      // // setQuestions(questions); // Assuming the API response is in this format
+
+      // form.setFieldsValue({
+      //   questions: questions.map(({ question, type }) => ({
+      //     text: question,
+      //     type,
+      //     timer: '' // Initialize timer as empty
+      //   }))
+      // });
+      // setTimeout(() => {
+      //     navigate('/jobs');
+      // }, 2000);
+    },
+    onError: (err) => {
+      console.log("ERR: ", err)
+    }
+  });
+  //  end of AI mutation 
+
   const createCandidateApplication = useMutation({
     mutationFn: async (values: any) => {
       const response = await api.post(`/applications`, {
@@ -120,12 +165,14 @@ function Application() {
       }, {
         headers: { 'Content-Type': 'application/json' },
       });
-
+      questionQuestions.mutate({
+        "candidateId": values?.candidateId,
+        "applicationId": response?.data?.id
+      })
       return response;
     },
     onSuccess: (data) => {
-      message.success('Application submitted successfully');
-      navigate(`/candidate/jobs/${id}/instruction?applicationId=${data?.data?.id}`);
+      alert("creating questions")
     },
     onError: (err) => {
       console.log('Failed to submit application', err);

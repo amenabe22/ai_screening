@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { Card, Steps, Button, message } from 'antd';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -31,6 +31,7 @@ const uploadToS3 = async (file: any) => {
 
 
 function VideoInterview() {
+  const { cid } = useParams<{ id: string }>();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -53,11 +54,17 @@ function VideoInterview() {
     };
   }, []);
 
-  const { data: job } = useQuery({
+
+  console.log("---", cid, "-----", id)
+  const { data: questions } = useQuery({
     queryKey: ['job', id],
     queryFn: async () => {
-      const { data } = await api.get(`/jobs/${id}`);
-      return data as JobPosting;
+      const { data } = await api.get(`/jobs/questions/${cid}/${id}`);
+      const sortedQuestions = data?.slice().sort((a, b) => b.isIdQuestion - a.isIdQuestion) || [];
+
+      console.log(sortedQuestions);
+      
+      return sortedQuestions;
     },
   });
 
@@ -89,7 +96,7 @@ function VideoInterview() {
       });
     },
     onSuccess: (data) => {
-      if (currentStep < (job?.questions?.length || 0) - 1) {
+      if (currentStep < (questions?.length || 0) - 1) {
         setCurrentStep(current => current + 1);
       } else {
         // message.success('Thank you for applying. We will get back to you soon');
@@ -98,9 +105,9 @@ function VideoInterview() {
     },
   });
 
-  if (!job?.questions) return null;
+  if (!questions) return null;
 
-  const currentQuestion = job.questions[currentStep];
+  const currentQuestion = questions[currentStep];
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

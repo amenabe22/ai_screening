@@ -17,9 +17,10 @@ function InterviewInstruction() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const applicationId = searchParams.get('applicationId');
+    const candidateId = searchParams.get('candidateId');
 
     const continueToInterview = () => {
-        navigate(`/candidate/jobs/${id}/interview?applicationId=${applicationId}`);
+        navigate(`/candidate/jobs/${id}/${candidateId}/interview?applicationId=${applicationId}`);
     }
 
     return (

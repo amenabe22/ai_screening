@@ -127,7 +127,7 @@ export const routes = createBrowserRouter([
           element: <InterviewInstruction />
         },
         {
-          path: '/candidate/jobs/:id/interview',
+          path: '/candidate/jobs/:id/:cid/interview',
           element: <VideoInterview />
         },
         {

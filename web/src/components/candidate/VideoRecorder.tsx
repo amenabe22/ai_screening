@@ -134,7 +134,7 @@ function VideoRecorder({ onSubmit, disabled, isRecruiter }: VideoRecorderProps) 
               icon={<Video className="w-4 h-4" />}
               onClick={initiateCountdown}
             >
-              Start Recording
+              Submit Answer
             </Button>
           )}
 

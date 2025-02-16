@@ -32,10 +32,13 @@ function QuestionList({ form }: { form: any }) {
             return await api.post('/jobs/gen-q/', {
                 "title": jobTitle,
                 "id": 4,
-                "description": jobDesc
+                "description": jobDesc,
+                "total_questions": 10
             });
         },
-        onSuccess: ({ data: { questions } }) => {
+        onSuccess: ({ data }) => {
+            const data_keys = Object.keys(data)
+            const questions = data[data_keys[0]]
             console.log("DATA: ", questions);
             message.success('Questions created successfully');
             // form.resetFields();
