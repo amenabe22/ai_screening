@@ -31,9 +31,9 @@ function QuestionList({ form }: { form: any }) {
         mutationFn: async () => {
             return await api.post('/jobs/gen-q/', {
                 "title": jobTitle,
-                "id": 4,
+                "id": "4",
                 "description": jobDesc,
-                "total_questions": 10
+                "total_questions": "10"
             });
         },
         onSuccess: ({ data }) => {
