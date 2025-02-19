@@ -50,7 +50,7 @@ async def get_candidate_questions(cid: int, jid: int):
             "jobId": {"equals": jid},
             "candidateId": {"equals": cid}
         },
-        take=10,
+        take=11,
         order={
             'createdAt': 'desc',
         }

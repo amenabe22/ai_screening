@@ -88,7 +88,7 @@ async def create_applicant_job_questions(data: JobQuestionData) -> List[Question
         questions = json.loads(content)  # Safely parse JSON
         # Create initial question for collecting candidate ID
         id_question = "Please verify your identity by holding up your National ID / Passport to the camera, make sure to have a clear lighting."
-        await db.question.create(
+        addnew = await db.question.create(
             data={"text": id_question, "jobId": int(data.id),
                   "candidateId": data.candidate_id, "isIdQuestion": True}
         )
