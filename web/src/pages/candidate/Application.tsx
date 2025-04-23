@@ -50,7 +50,6 @@ function Application() {
       const candidateCheck = candidateList?.find(candidate => candidate.email === form.getFieldValue('email'));
 
       if (fileResponse) {
-        setIsLoading(false)
 
         // if (candidateCheck) {
         //   console.log("CANDIDATE: ", candidateCheck);
@@ -127,6 +126,7 @@ function Application() {
       });
     },
     onSuccess: ({ data }) => {
+      setIsLoading(false)
       console.log("Generated Questions: ", data)
       message.success('Application submitted successfully');
       // on success create questions 

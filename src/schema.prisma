@@ -57,7 +57,7 @@ model VideoResponse {
   id            Int         @id @default(autoincrement())
   videoUrl      String // URL to the video
   transcript    String? // AI-generated transcript
-  summary       String? // AI-generated summary
+  summary       String?     @db.VarChar(1000) // AI-generated summary
   feedback      String? // AI-generated feedback
   rating        String? // AI-generated rating
   recruiterId   Int?
