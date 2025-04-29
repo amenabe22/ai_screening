@@ -22,8 +22,6 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy the entire project to the container
 COPY . /app
 
-RUN npm install -g prisma
-
 RUN prisma generate --schema=/app/src/schema.prisma
 # RUN prisma migrate dev --name init
 
