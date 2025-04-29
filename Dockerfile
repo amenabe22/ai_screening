@@ -1,35 +1,41 @@
-# Use the official Python image as the base image
+# Start from official Python image
 FROM python:3.10-slim
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Install system dependencies required for the app, including PostgreSQL libraries and git
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install system dependencies including PostgreSQL and Node.js
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    curl \
     git \
-    libpq-dev \
     gcc \
-    && rm -rf /var/lib/apt/lists/*
+    libpq-dev \
+    ffmpeg \
+    ca-certificates && \
+    # Install Node.js (for Prisma CLI)
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g prisma && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y ffmpeg
-
-# Copy the requirements file to the container
-COPY requirements.txt /app/requirements.txt
+# Copy Python requirements
+COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project to the container
-COPY . /app
+# Copy the full application code
+COPY . .
 
-RUN prisma generate --schema=/app/src/schema.prisma
-# RUN prisma migrate dev --name init
+# Generate Prisma client
+RUN prisma generate --schema=src/schema.prisma
 
-# Set PYTHONPATH dynamically
+# Set PYTHONPATH to include /app/src
 ENV PYTHONPATH=/app/src
 
-# Expose the port FastAPI runs on
+# Expose FastAPI port
 EXPOSE 8000
 
-# Set the default command to run the FastAPI application
+# Run FastAPI app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
