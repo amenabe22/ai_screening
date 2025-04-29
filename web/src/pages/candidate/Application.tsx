@@ -172,7 +172,7 @@ function Application() {
       return response;
     },
     onSuccess: (data) => {
-      alert("creating questions")
+      message.success('creating questions');
     },
     onError: (err) => {
       console.log('Failed to submit application', err);
